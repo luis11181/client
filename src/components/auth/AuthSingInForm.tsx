@@ -115,17 +115,13 @@ const AuthForm: React.FC<IFromProps> = (props): JSX.Element => {
 
       //* otra forma de proteccion seria solo agregar el random string de clave XSRF-TOKEN  en el cookie y enviarlo en la creacion del token, y en cada request se debe agregar el XSRF-TOKEN en el header. validando este el servidor contra el del jwt token.(ya que solo desde el mismo dominio se puede leer dicho token)
 
-      //* set jwt token in cookies of name access_token
-      // setCookie("access_token", resultFetchJson.token, {
-      //   maxAge: remainingMilliseconds,
-      //   path: "/",
-      //   httpOnly: true, //not accesible throw javascript
-      //   secure: true, //solo se envia por https
-      // });
-
       console.log(remainingMilliseconds);
 
       const expiryDate = new Date(new Date().getTime() + remainingMilliseconds);
+
+      resultFetchJson.userId = "aa";
+      resultFetchJson.role = "admin";
+      resultFetchJson.firstName = "aaa luis";
 
       dispatch(changeAuthState(true));
       dispatch(changeJwtToken(resultFetchJson.token));
@@ -134,7 +130,9 @@ const AuthForm: React.FC<IFromProps> = (props): JSX.Element => {
       dispatch(changeNombreUsuario(resultFetchJson.firstName));
       dispatch(changeRol(resultFetchJson.role));
 
-      localStorage.setItem("JWTToken", resultFetchJson.token);
+      //* in this case we dont want to store the token in local storage, but in cookies
+      //TODO: create a token that can be added for aditional security
+      localStorage.setItem("JWTToken", "dummytoken");
       localStorage.setItem("userId", resultFetchJson.userId);
       localStorage.setItem("rol", resultFetchJson.role);
       localStorage.setItem("nombreUsuario", resultFetchJson.firstName);
