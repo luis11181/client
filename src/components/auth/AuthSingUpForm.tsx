@@ -66,6 +66,7 @@ const AuthForm = () => {
         `${process.env.REACT_APP_BACKENDURL}/auth/signup`,
         {
           method: "PUT",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },

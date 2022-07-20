@@ -84,6 +84,7 @@ const AuthForm: React.FC<IFromProps> = (props): JSX.Element => {
         `${process.env.REACT_APP_BACKENDURL}/auth/login`,
         {
           method: "POST",
+          credentials: "include", // Don't forget to specify this if you need cookies
           headers: {
             "Content-Type": "application/json",
           },
@@ -129,6 +130,9 @@ const AuthForm: React.FC<IFromProps> = (props): JSX.Element => {
       dispatch(changeUserId(resultFetchJson.userId));
       dispatch(changeNombreUsuario(resultFetchJson.firstName));
       dispatch(changeRol(resultFetchJson.role));
+
+      //this cookie is set for this domain only not the server one, if theya re different the server will not be able to read it
+      //document.cookie = `token=${resultFetchJson.token}; secure= true; maxAge: 76400000; sameSite= none`;
 
       //* in this case we dont want to store the token in local storage, but in cookies
       //TODO: create a token that can be added for aditional security
