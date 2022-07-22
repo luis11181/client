@@ -80,11 +80,13 @@ const AuthForm: React.FC<IFromProps> = (props): JSX.Element => {
     }
 
     try {
+      console.log("login");
+
       let resultFetch = await fetch(
         `${process.env.REACT_APP_BACKENDURL}/auth/login`,
         {
           method: "POST",
-          credentials: "include", // Don't forget to specify this if you need cookies
+          // credentials: "include", // Don't forget to specify this if you need cookies
           headers: {
             "Content-Type": "application/json",
           },

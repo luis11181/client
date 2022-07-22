@@ -4,6 +4,7 @@ import { Box, Button } from "@mui/material";
 import { selectNombre } from "../app/mainStateSlice";
 import resumen from "../assets/resumen.jpg";
 import UploadDoc from "../components/upload/UploadDoc";
+import UploadDocMockup from "../components/upload/UploadDocMockup";
 
 export default function MainPage() {
   const authed: boolean | null = useAppSelector(
@@ -45,7 +46,7 @@ export default function MainPage() {
       }}
     >
       {`Bienvenido ${nombre}`}
-      <UploadDoc />
+      <UploadDocMockup />
     </Box>
   );
 }
