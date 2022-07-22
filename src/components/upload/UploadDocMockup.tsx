@@ -86,7 +86,9 @@ const UploadDocMockup: React.FC = (): JSX.Element => {
         return new Promise((resolve, reject) => {
           const reader = new FileReader();
           reader.readAsDataURL(file);
-          reader.onload = () => resolve(reader.result); //.replace("data:", "").replace(/^.+,/, ""));
+          reader.onload = (e) =>
+            //@ts-ignore
+            resolve(e.target?.result!.replace("data:", "").replace(/^.+,/, ""));
           reader.onerror = (error) => reject(error);
         });
       };
