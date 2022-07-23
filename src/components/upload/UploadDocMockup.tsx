@@ -25,43 +25,29 @@ interface IValues {
 }
 
 interface IResponse {
-  token: string;
-  userId: string;
-  role: string;
-  firstName: string;
   message: string;
 }
 
-type FormValues = {
-  tipoComprobante: "egreso" | "ingresos" | "gastos";
-  numero: string;
-  observaciones: string;
-  formaPago: string;
-  banco: string;
-  fechaAplica: string;
-  chequeNumero: string;
-  codigoPuc: string;
-  concepto: string;
-  valor: number;
-  lista: {
-    codigoPuc: string;
-    concepto: string;
-    valor: number;
-  }[];
-};
+interface IResponse2 {
+  type: string;
+  message: string;
+  url: string;
+}
 
 const UploadDocMockup: React.FC = (): JSX.Element => {
   // let location: any = useLocation();
   // //si hubo una ruta anterio la pone en la variable, en caso contrario lleva a la pronmcipal
   // let from = location.state?.from?.pathname || "/";
 
+  const [url, setUrl] = useState("");
+
   const onClick = async () => {
     //e es el objeto evento normal
     try {
       let atributes = {
-        color: "primary",
-        variant: "contained",
-        disabled: false,
+        comments: "best comment for my object",
+        firstName: "luis alfonso",
+        lastName: "apellidos",
       };
 
       const file = document.querySelector(
@@ -98,7 +84,7 @@ const UploadDocMockup: React.FC = (): JSX.Element => {
       let resultFetch = await fetch(
         `${process.env.REACT_APP_BACKENDURL}/upload/document`,
         {
-          method: "POST",
+          method: "PUT",
           // credentials: "include", // Don't forget to specify this if you need cookies
           headers: {
             "Content-Type": "application/json",
@@ -108,6 +94,9 @@ const UploadDocMockup: React.FC = (): JSX.Element => {
             type: type,
             atributes: atributes,
             file: data,
+            documentTransaction: "papeles ingreso",
+            transaction: "venta",
+            documentNumber: 1018491224,
           }),
         }
       );
@@ -122,6 +111,82 @@ const UploadDocMockup: React.FC = (): JSX.Element => {
         throw new Error(resultFetchJson.message);
         // throw new Error("fallo el inicio de sesion!");
       }
+    } catch (err: any) {
+      console.log(err);
+    }
+  };
+
+  // get by ulid
+
+  const onClickGetByUlid = async () => {
+    //e es el objeto evento normal
+    try {
+      const ulid = "01G8M84D090M9V8KXG5EYY81MP";
+
+      let resultFetch = await fetch(
+        `${process.env.REACT_APP_BACKENDURL}/download/ulidFile/${ulid}`,
+        {
+          method: "GET",
+          // credentials: "include", // Don't forget to specify this if you need cookies
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + process.env.REACT_APP_ACCESSTOKEN,
+          },
+        }
+      );
+
+      let resultFetchJson = (await resultFetch.json()) as IResponse2;
+
+      if (resultFetch.status === 401) {
+        throw new Error(resultFetchJson.message);
+      }
+
+      if (!resultFetch.ok) {
+        throw new Error(resultFetchJson.message);
+        // throw new Error("fallo el inicio de sesion!");
+      }
+
+      setUrl(resultFetchJson.url);
+    } catch (err: any) {
+      console.log(err);
+    }
+  };
+
+  // get by ulid
+
+  const onClickGetRawByUlid = async () => {
+    //e es el objeto evento normal
+    try {
+      const ulid = "01G8M84D090M9V8KXG5EYY81MP";
+
+      let resultFetch = await fetch(
+        `${process.env.REACT_APP_BACKENDURL}/download/ulidFile/${ulid}`,
+        {
+          method: "GET",
+          // credentials: "include", // Don't forget to specify this if you need cookies
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + process.env.REACT_APP_ACCESSTOKEN,
+          },
+        }
+      );
+
+      let resultFetchJson = (await resultFetch.json()) as IResponse2;
+
+      if (resultFetch.status === 401) {
+        throw new Error(resultFetchJson.message);
+      }
+
+      if (!resultFetch.ok) {
+        throw new Error(resultFetchJson.message);
+        // throw new Error("fallo el inicio de sesion!");
+      }
+
+      // resultFetchJson.type transform from base 64 to file wuth resultfetchJson.type anddownload the resulting file
+      let blob = new Blob([atob(resultFetchJson.type), resultFetchJson.type]);
+      let url = URL.createObjectURL(blob);
+      window.open(url);
+      console.log(resultFetchJson.type);
     } catch (err: any) {
       console.log(err);
     }
@@ -155,15 +220,58 @@ const UploadDocMockup: React.FC = (): JSX.Element => {
       >
         <input type="file" id="file" name="file"></input>
 
-        <button
+        <Button
           onClick={() => {
             onClick();
           }}
         >
           send
-        </button>
+        </Button>
       </Box>
       <Box sx={{ m: 1 }} />
+
+      <Typography
+        variant="h1"
+        component="h1"
+        align="center"
+        fontSize={30}
+        fontWeight="bold"
+        gutterBottom
+      >
+        download file by ulid
+      </Typography>
+
+      <Button
+        onClick={() => {
+          onClickGetByUlid();
+        }}
+      >
+        get
+      </Button>
+
+      <div>
+        url:
+        <a href={url}>{url.slice(0, 10)}..</a>
+      </div>
+
+      <Typography
+        variant="h1"
+        component="h1"
+        align="center"
+        fontSize={30}
+        fontWeight="bold"
+        gutterBottom
+      >
+        download raw blob by ulid
+      </Typography>
+
+      <Button
+        onClick={() => {
+          onClickGetRawByUlid();
+        }}
+      >
+        get raw blob
+      </Button>
     </Box>
   );
 };
