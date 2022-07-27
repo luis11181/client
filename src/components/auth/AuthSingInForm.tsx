@@ -80,7 +80,7 @@ const AuthForm: React.FC<IFromProps> = (props): JSX.Element => {
     }
 
     try {
-      console.log("login");
+      console.log("login", process.env.REACT_APP_BACKENDURL);
 
       let resultFetch = await fetch(
         `${process.env.REACT_APP_BACKENDURL}/auth/login`,
